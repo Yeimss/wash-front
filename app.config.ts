@@ -7,6 +7,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   extra: {
     apiUrl: process.env.APP_ENV === "prod" 
     ? "https://mi-api.com/api" 
-    : "https://localhost:7140/"
+    : "http://192.168.1.7:5000/api" //"https://192.168.1.7:7140/api"
   },
 });

@@ -4,6 +4,7 @@ import Constants from "expo-constants"
 
 const api = axios.create({
     baseURL: Constants.expoConfig?.extra?.apiUrl,
+    withCredentials: false,
 });
 
 api.interceptors.request.use(async (config) => {
