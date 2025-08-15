@@ -21,42 +21,60 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
+const TOKEN_KEY = "token";
+const USER_KEY = "user";
+
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
   const login = async (document: string, password: string) => {
-    console.info(`Trying auth: `);
-    console.log({ document, password })
     try {
-        const res = await api.post<LoginResponse>("/Auth/Login", { document, password });
-        console.log("Respuesta completa:", res);
-        await AsyncStorage.setItem("token", res.data.token);
-        setToken(res.data.token);
-        setUser(res.data.user);
+      const res = await api.post<LoginResponse>("/Auth/Login", { document, password });
+      console.log("Respuesta completa:", res);
+
+      const tokenFromResp = res.data?.data?.token;
+      const userFromResp = res.data?.data?.user as User | undefined;
+
+      if (!tokenFromResp) {
+        throw new Error("Respuesta inválida: token no presente");
+      }
+
+      await AsyncStorage.setItem(TOKEN_KEY, tokenFromResp);
+      if (userFromResp) {
+        await AsyncStorage.setItem(USER_KEY, JSON.stringify(userFromResp));
+      }
+
+      setToken(tokenFromResp);
+      if (userFromResp) setUser(userFromResp);
     } catch (error: any) {
-        if (error.response) {
-            console.log("Data del servidor:", error.response.data);
-            console.log("Status:", error.response.status);
-            console.log("Headers:", error.response.headers);
-        } else if (error.request) {
-            console.log("Request que se envió pero no respondió:", error.request);
-        } else {
-            console.log("Mensaje de error:", error.message);
-        }
+      if (error.response) {
+        console.log("Data del servidor:", error.response.data);
+        console.log("Status:", error.response.status);
+      } else if (error.request) {
+        console.log("Request que se envió pero no respondió:", error.request);
+      } else {
+        console.log("Mensaje de error:", error.message);
+      }
+      throw error;
     }
   };
 
   const logout = async () => {
-    await AsyncStorage.removeItem("token");
+    await AsyncStorage.removeItem(TOKEN_KEY);
+    await AsyncStorage.removeItem(USER_KEY);
     setToken(null);
     setUser(null);
   };
 
   const checkToken = async () => {
-    const savedToken = await AsyncStorage.getItem("token");
-    if (savedToken) {
-      setToken(savedToken);
+    try {
+      const savedToken = await AsyncStorage.getItem(TOKEN_KEY);
+      const savedUser = await AsyncStorage.getItem(USER_KEY);
+      if (savedToken) setToken(savedToken);
+      if (savedUser) setUser(JSON.parse(savedUser));
+    } catch (err) {
+      console.log("Error al cargar credenciales:", err);
     }
   };
 

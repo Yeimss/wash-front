@@ -11,7 +11,14 @@ export interface User {
     phone: string
 }
 
-export interface LoginResponse {
+export interface LoginInner {
   token: string;
   user: User;
+}
+
+export interface LoginResponse {
+  data: LoginInner;
+  message: string;
+  statusCode: number;
+  success: boolean;
 }
