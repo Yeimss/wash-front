@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AuthContext } from "../context/AuthContext";
 import LoginScreen from "../screens/LoginScreen";
 import HomeScreen from "../screens/HomeScreen";
+import TabNavigator from "./TabNavigator";
 
 export type RootStackParamList = {
   Login: undefined;
@@ -19,9 +20,15 @@ export default function AppNavigator() {
     <NavigationContainer>
       <Stack.Navigator>
         {token ? (
-          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen 
+          options={{ headerShown: false }} 
+          name="Home" 
+          component={TabNavigator} />
         ) : (
-          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen 
+          name="Login"
+          component={LoginScreen}
+          options={{ headerShown: true, title: "Iniciar sesión" }} />
         )}
       </Stack.Navigator>
     </NavigationContainer>
