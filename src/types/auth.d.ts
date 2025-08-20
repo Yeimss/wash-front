@@ -9,6 +9,9 @@ export interface User {
     password: string
     email: string
     phone: string
+    image: string
+    sendWhatsapp : boolean
+    sendSMS : boolean
 }
 
 export interface LoginInner {

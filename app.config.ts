@@ -7,7 +7,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   extra: {
     apiUrl: process.env.APP_ENV === "prod" 
     ? "https://mi-api.com/api" 
-    : "http://192.168.1.7:5000/api" 
-    //: "https://192.168.1.7:7140/api"
+    : "http://192.168.1.7:5000/api" //gta 
+    //: "http://192.168.20.133:5000/api" //violetas 
   },
 });
