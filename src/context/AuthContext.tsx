@@ -34,10 +34,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       
       const tokenFromResp = res.data?.data?.token;
       const userFromResp = res.data?.data?.user as User | undefined;
-      
-      console.log("usuario:");
-      console.log(userFromResp);
-      
+
       if (!tokenFromResp) {
         throw new Error("Respuesta inválida: token no presente");
       }
